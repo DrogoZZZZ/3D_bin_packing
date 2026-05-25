@@ -1,0 +1,5 @@
+dataset,tasks,avg_items,min_items,max_items,avg_skus,scenarios
+dataset_100.json,100,94.6,35,194,3.4,fragile_tower: 25; heavy_water: 25; liquid_tetris: 25; random_mixed: 25
+dataset_150.json,150,94.9,36,185,3.3,fragile_tower: 38; heavy_water: 38; liquid_tetris: 37; random_mixed: 37
+dataset_200_2.json,200,94.7,33,194,3.4,fragile_tower: 50; heavy_water: 50; liquid_tetris: 50; random_mixed: 50
+dataset_benchmark.json,200,140.0,31,316,3.7,fragile_tower: 40; heavy_fragile_mix: 40; heavy_water: 30; high_count_mixed: 40; liquid_tetris: 30; random_mixed: 20

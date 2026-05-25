@@ -1,0 +1,244 @@
+\clearpage
+\section[Разработанное решение Smart 3D Packing]{\centering\MakeUppercase{Разработанное решение Smart 3D Packing}}
+
+\subsection{\centering{Структура репозитория}}
+
+Репозиторий проекта организован как экспериментальная среда для исследования алгоритмов паллетизации. Основные каталоги и файлы приведены в таблице~\ref{tab:repo-structure}.
+
+\begin{table}[H]
+\caption{Основные компоненты проекта}
+\label{tab:repo-structure}
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.28\textwidth}X}
+\toprule
+\textbf{Компонент} & \textbf{Назначение} \\
+\midrule
+\code{datasets} & готовые single-pallet наборы задач в формате JSON \\
+\code{dataset\_generation} & генератор синтетических сценариев фуд-ритейла \\
+\code{solvers} & основные single-pallet решатели: greedy, MaxRects, LNS, GAN+GA \\
+\code{validator.py} & проверка жестких ограничений и расчет итоговой метрики \\
+\code{results} & сохраненные результаты запусков решателей и рассчитанные метрики \\
+\code{brute\_force\_vs\_algo} & сравнение эвристик с branch-and-bound на малых задачах \\
+\code{multipallet} & расширение на случай нескольких паллет \\
+\code{vizualizator} & интерактивная визуализация укладок \\
+\code{benchmark\_report.py}, \code{plot\_benchmark.py} & агрегация результатов и построение графиков \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Общий pipeline проекта показан на рисунке~\ref{fig:architecture}. Сначала формируется или загружается входной JSON, затем один из решателей строит укладку, валидатор проверяет корректность и вычисляет метрики, после чего результаты сохраняются и могут быть визуализированы или агрегированы в benchmark-отчет.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=10mm and 12mm,
+  block/.style={draw, rounded corners=2pt, minimum width=30mm,
+    minimum height=11mm, align=center, font=\small},
+  data/.style={block, fill=blue!8},
+  solver/.style={block, fill=green!9},
+  check/.style={block, fill=orange!12},
+  outputblock/.style={block, fill=gray!10},
+  note/.style={draw, rounded corners=2pt, fill=white, align=center,
+    font=\footnotesize, inner sep=3pt},
+  arrow/.style={-{Latex[length=2.2mm]}, thick}
+]
+\node[data] (source) {Данные\\и генератор};
+\node[data, right=of source] (json) {Входной\\JSON};
+\node[solver, right=of json] (solver) {Решатели\\Greedy, MaxRects\\LNS, GAN+GA};
+\node[check, right=of solver] (validator) {Валидатор\\ограничений};
+\node[outputblock, right=of validator] (metrics) {Метрики\\и результат};
+
+\node[note, below=8mm of source] (datasets) {\code{datasets}\\\code{dataset\_generation}};
+\node[note, below=8mm of solver] (solvers) {\code{solvers}\\единый формат ответа};
+\node[note, below=8mm of metrics] (reports) {\code{results}\\графики, отчеты\\визуализация};
+
+\draw[arrow] (source) -- (json);
+\draw[arrow] (json) -- (solver);
+\draw[arrow] (solver) -- (validator);
+\draw[arrow] (validator) -- (metrics);
+\draw[arrow] (source) -- (datasets);
+\draw[arrow] (solver) -- (solvers);
+\draw[arrow] (metrics) -- (reports);
+\end{tikzpicture}%
+}
+\caption{Архитектура экспериментального контура проекта}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{\centering{Генерация данных}}
+
+Генератор \code{dataset\_generation/generator.py} использует набор товарных архетипов. Для каждого архетипа заданы базовые размеры, масса, признак вертикальной ориентации и хрупкость. При создании конкретной задачи размеры и масса варьируются небольшим случайным шумом, а количество экземпляров выбирается из диапазона.
+
+В проекте реализованы сценарии:
+\begin{itemize}
+  \item \code{heavy\_water} -- большое число тяжелых упаковок воды и сахара;
+  \item \code{fragile\_tower} -- комбинация бананов, чипсов и яиц с хрупкими товарами;
+  \item \code{liquid\_tetris} -- вода, вино и консервы с ограничениями ориентации;
+  \item \code{high\_count\_mixed} -- много разнотипных товаров;
+  \item \code{heavy\_fragile\_mix} -- тяжелые и хрупкие товары в одном заказе;
+  \item \code{random\_mixed} -- случайная смесь нескольких архетипов.
+\end{itemize}
+
+Состав датасетов приведен в таблице~\ref{tab:datasets}. Эти данные были получены автоматическим анализом файлов из каталога \code{datasets}.
+
+\begin{table}[H]
+\caption{Характеристики используемых датасетов}
+\label{tab:datasets}
+\centering
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Датасет} & \textbf{Задач} & \textbf{Ср. объектов} & \textbf{Мин.} & \textbf{Макс.} & \textbf{Ср. SKU} \\
+\midrule
+\code{dataset\_100.json} & 100 & 94.6 & 35 & 194 & 3.4 \\
+\code{dataset\_150.json} & 150 & 94.9 & 36 & 185 & 3.3 \\
+\code{dataset\_200\_2.json} & 200 & 94.7 & 33 & 194 & 3.4 \\
+\code{dataset\_benchmark.json} & 200 & 140.0 & 31 & 316 & 3.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{dataset_composition.png}
+\caption{Сценарный состав сгенерированных наборов задач}
+\label{fig:dataset-composition}
+\end{figure}
+
+\subsection{\centering{Валидатор и единая оценка}}
+
+Файл \code{validator.py} является центральным элементом экспериментальной методологии. Он не зависит от конкретного решателя и выполняет одинаковые проверки для всех ответов. Сначала валидатор восстанавливает геометрию размещенных коробов по координатам и размерам, затем проверяет anti-cheat условие: фактические размеры должны быть перестановкой исходных.
+
+После этого последовательно проверяются масса, границы паллеты, ограничение \code{strict\_upright}, трехмерные пересечения и опора. Только валидные решения получают метрики. Такой подход исключает ситуацию, когда один метод оценивается по более мягким правилам, чем другой.
+
+\subsection{\centering{Greedy-решатель}}
+
+Файл \code{solvers/greedy\_algorithm.py} реализует последовательный алгоритм на extreme points. Количество каждого SKU разворачивается в список отдельных экземпляров. Затем объекты сортируются по объему, причем хрупкие и нештабелируемые товары получают специальный приоритет, чтобы уменьшить риск плохой структуры укладки.
+
+Для каждого объекта перебираются допустимые повороты. Функция \code{get\_rotations} возвращает ориентации из множества \code{LWH}, \code{LHW}, \code{WLH}, \code{WHL}, \code{HLW}, \code{HWL}; для \code{strict\_upright} остаются только повороты с исходной высотой. Проверки пересечений, опоры и хрупкости ускорены пространственной сеткой \code{PlacedGrid}, которая ограничивает число уже размещенных коробов, участвующих в геометрических проверках.
+
+Преимущество greedy -- скорость и простота. На всех сохраненных single-pallet наборах средний временной балл равен 1.0. Недостаток -- невозможность перестроить ранние решения, что особенно заметно на \code{dataset\_benchmark.json}: средний item coverage снижается до 0.4906.
+
+\subsection{\centering{MaxRects-решатель}}
+
+Файл \code{solvers/solve\_conditions.py} реализует послойный подход. Для каждого слоя выбирается высота-кандидат, после чего основания коробов упаковываются двумерным MaxRects-подобным алгоритмом. Метод сортирует товары по массе и объему, пытается заполнить слой, затем переходит к следующей высоте.
+
+Этот решатель очень быстр: среднее время на контрольном наборе составляет около 52 мс. Он достигает высокой утилизации объема, но заметно проигрывает по хрупкости. Такое поведение объясняется тем, что послойная плотность и сортировка по весу не всегда согласуются с правилом размещения хрупких товаров верхним слоем.
+
+\subsection{\centering{LNS-решатель}}
+
+Файл \code{solvers/lns\_solver.py} содержит наиболее сильный решатель проекта. Его pipeline показан на рисунке~\ref{fig:lns-pipeline}.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=9mm and 10mm,
+  processnode/.style={draw, rounded corners=2pt, fill=blue!7, minimum width=31mm,
+    minimum height=10mm, align=center, font=\small},
+  phase/.style={draw, rounded corners=2pt, fill=green!9, minimum width=31mm,
+    minimum height=10mm, align=center, font=\small},
+  decide/.style={draw, diamond, aspect=2.1, fill=orange!12,
+    align=center, font=\small, inner sep=1.5pt},
+  arrow/.style={-{Latex[length=2.2mm]}, thick},
+  loop/.style={-{Latex[length=2.2mm]}, thick, dashed}
+]
+\node[processnode] (input) {Входная\\задача};
+\node[phase, right=of input] (start) {Построение\\начального решения};
+\node[phase, right=of start] (destroy) {Destroy:\\удаление части\\коробов};
+\node[phase, right=of destroy] (stabilize) {Стабилизация\\опоры};
+\node[phase, right=of stabilize] (repair) {Repair:\\beam search};
+
+\node[phase, below=11mm of repair] (evaluate) {Оценка\\кандидата};
+\node[phase, left=of evaluate] (accept) {Принятие\\по score/SA};
+\node[processnode, left=of accept] (current) {Обновление\\текущего решения};
+\node[processnode, left=of current] (stop) {Проверка\\бюджета времени};
+\node[processnode, left=of stop] (output) {Ответ JSON\\и метрики};
+\node[processnode, below=8mm of accept] (best) {Обновление\\лучшего решения};
+
+\draw[arrow] (input) -- (start);
+\draw[arrow] (start) -- (destroy);
+\draw[arrow] (destroy) -- (stabilize);
+\draw[arrow] (stabilize) -- (repair);
+\draw[arrow] (repair) -- (evaluate);
+\draw[arrow] (evaluate) -- (accept);
+\draw[arrow] (accept) -- (current);
+\draw[loop] (accept) -- node[right, font=\footnotesize] {если лучше} (best);
+\draw[loop] (best.west) to[out=180,in=-90] (output.south);
+\draw[arrow] (current) -- (stop);
+\draw[loop] (stop.north) to[out=90,in=-90] node[above, font=\footnotesize] {продолжить} (destroy.south);
+\draw[arrow] (stop) -- node[above, font=\footnotesize] {стоп} (output);
+\end{tikzpicture}%
+}
+\caption{Основные этапы LNS-решателя}
+\label{fig:lns-pipeline}
+\end{figure}
+
+Сначала LNS строит начальное решение. В отличие от одиночного greedy-запуска, используется несколько детерминированных порядков и случайные рестарты в пределах бюджета \code{greedy\_phase\_s}. Затем запускается основной цикл destroy/repair. В реализации присутствуют destroy-эвристики:
+\begin{itemize}
+  \item случайное удаление размещенных коробов;
+  \item удаление верхних коробов;
+  \item удаление пространственного кластера;
+  \item удаление коробов, связанных с нарушениями хрупкости;
+  \item удаление коробов, близких по объему к непомещенным;
+  \item полный рестарт;
+  \item удаление малых размещенных коробов.
+\end{itemize}
+
+После разрушения вызывается стабилизация частичного решения: если некоторые короба потеряли достаточную опору, они также удаляются. Этап repair основан на beam search. Для частичных состояний применяется оценка
+\begin{equation}
+\mathrm{partial\_score}=0.50U_{\mathrm{vol}}+0.30C_{\mathrm{items}}-0.005n_{\mathrm{frag\_viol}},
+\label{eq:partial}
+\end{equation}
+которая ориентирует восстановление на объем, покрытие и умеренный штраф за потенциальные нарушения хрупкости.
+
+Ключевые параметры LNS приведены в таблице~\ref{tab:lns-params}.
+
+\begin{table}[H]
+\caption{Основные параметры LNS-конфигурации}
+\label{tab:lns-params}
+\centering
+\small
+\begin{tabular}{lcl}
+\toprule
+\textbf{Параметр} & \textbf{Значение} & \textbf{Назначение} \\
+\midrule
+\code{time\_budget\_s} & 4.8 & общий бюджет времени \\
+\code{greedy\_phase\_s} & 1.5 & стартовая greedy-фаза \\
+\code{destroy\_k\_fraction} & 0.15 & доля удаляемых коробов \\
+\code{destroy\_k\_min/max} & 3 / 15 & границы размера разрушения \\
+\code{beam\_width} & 8 & ширина beam search \\
+\code{repair\_queue\_limit} & 50 & максимальная очередь восстановления \\
+\code{repair\_restarts} & 2 & дополнительные repair-рестарты \\
+\code{early\_stop\_patience} & 25 & остановка при отсутствии улучшений \\
+\code{ils\_kicks} & 5 & число ILS-перезапусков \\
+\code{sa\_initial\_temp} & 0.015 & начальная температура simulated annealing \\
+\code{sa\_cooling\_rate} & 0.92 & скорость охлаждения \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{\centering{GAN+GA-решатель}}
+
+Файл \code{solvers/gan\_ga\_solver.py} реализует гибрид генетического алгоритма и простой генеративно-состязательной модели. Хромосома состоит из перестановки объектов и списка выборов ориентаций. Декодер строит укладку greedy-методом с ограниченным числом extreme points.
+
+Генетическая часть использует турнирный отбор, order crossover, скрещивание ориентаций и мутации перестановки. GAN-компонента реализована на NumPy: генератор создает приоритеты объектов, преобразуемые в перестановку, а дискриминатор оценивает похожесть решения на элитные особи. Эта оценка добавляется к fitness с малым коэффициентом.
+
+Метод интересен как ML-ориентированная альтернатива, но в текущих экспериментах уступает LNS по среднему score на общих наборах. При этом GAN+GA сохраняет высокий fragility score и демонстрирует конкурентную утилизацию объема.
+
+\subsection{\centering{Визуализация}}
+
+Каталог \code{vizualizator} содержит средства просмотра результатов. Визуализатор читает входной JSON и JSON с размещениями, строит трехмерное представление паллеты и позволяет анализировать слои. Для дипломной работы на основе сохраненного результата LNS построен пример укладки на рисунке~\ref{fig:example-packing}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.80\textwidth]{example_lns_packing.png}
+\caption{Пример укладки, построенной LNS для первой задачи \code{dataset\_100.json}}
+\label{fig:example-packing}
+\end{figure}
+
+\subsection{\centering{Выводы по разделу}}
+
+Проект представляет собой не отдельный алгоритм, а полноценный исследовательский стенд. Его сильная сторона -- единый формат данных, общий валидатор и сохраненные результаты для нескольких решателей. На уровне реализации наиболее развитым методом является LNS: он использует greedy как стартовую эвристику, но дополняет ее разрушением и восстановлением фрагментов решения, адаптивными эвристиками и simulated annealing.

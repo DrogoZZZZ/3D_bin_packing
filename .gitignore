@@ -4,3 +4,40 @@ __pycache__/
 *.so
 *.png
 *.csv
+!Nir_Irt/images/
+!Nir_Irt/images/*.png
+!Nir_Irt/tables/
+!Nir_Irt/tables/*.csv
+!kurs_Irt/figures/
+!kurs_Irt/figures/*.png
+!diploma/images/
+!diploma/images/*.png
+!diploma/tables/
+!diploma/tables/*.csv
+NIR/
+Бланки/
+Дипломы прошлых лет/
+
+# Codex/local assistant artifacts
+.codex/
+codex/
+codex-*/
+*codex*
+~$*
+**/~$*
+diploma/requirements_vkr.txt
+diploma/diploma_Irtyuga_3D_bin_packing_updated.pdf
+diploma/diploma_Irtyuga_3D_bin_packing_fixed.pdf
+diploma/diploma_Irtyuga_3D_bin_packing_figures_fixed.pdf
+diploma/diploma_Irtyuga_3D_bin_packing_arrows_fixed.pdf
+diploma/main.pdf
+diploma/main_xe.pdf
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz

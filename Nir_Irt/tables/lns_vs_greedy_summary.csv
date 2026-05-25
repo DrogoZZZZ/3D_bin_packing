@@ -1,0 +1,4 @@
+dataset,dataset_label,tasks,greedy_final_score,greedy_volume_utilization,greedy_item_coverage,greedy_fragility_score,greedy_time_score,greedy_solve_time_ms,lns_final_score,lns_volume_utilization,lns_item_coverage,lns_fragility_score,lns_time_score,lns_solve_time_ms,lns_wins,ties,lns_losses
+dataset_100.json,dataset_100,100,0.6841849999999999,0.596105,0.620425,1.0,1.0,114.76,0.7110930000000001,0.638365,0.658029,0.96,0.985,474.28,61,39,0
+dataset_200_2.json,dataset_200_2,200,0.7120035,0.622833,0.668626,1.0,1.0,118.45,0.743397,0.6712375,0.705514,0.9747499999999999,0.9865,523.595,141,59,0
+dataset_benchmark.json,dataset_benchmark,200,0.6549185,0.615485,0.490593,1.0,1.0,139.0,0.729784,0.7172369999999999,0.6036425,0.9832500000000001,0.9175,1062.595,188,12,0

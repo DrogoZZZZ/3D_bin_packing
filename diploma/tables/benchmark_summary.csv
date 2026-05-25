@@ -1,0 +1,14 @@
+solver,dataset,tasks,valid,score,volume,coverage,fragility,time_score,avg_ms
+conditions,dataset_100.json,100,100,0.7104,0.7005,0.6825,0.5545,1.0,15.1
+conditions,dataset_200_2.json,200,200,0.7117,0.7,0.6809,0.5737,1.0,15.6
+conditions,dataset_benchmark.json,200,200,0.7124,0.7513,0.616,0.5198,1.0,52.0
+gan_ga_solver,dataset_100.json,100,100,0.7012,0.6278,0.6271,1.0,0.991,795.3
+gan_ga_solver,dataset_150.json,150,150,0.7262,0.6571,0.6589,1.0,1.0,769.3
+gan_ga_solver,dataset_200_2.json,200,200,0.7327,0.67,0.6591,1.0,1.0,770.4
+gan_ga_solver,dataset_benchmark.json,200,200,0.7161,0.7156,0.554,1.0,0.9205,1080.6
+greedy_algorithm,dataset_100.json,100,100,0.6842,0.5961,0.6204,1.0,1.0,114.8
+greedy_algorithm,dataset_200_2.json,200,200,0.712,0.6228,0.6686,1.0,1.0,118.5
+greedy_algorithm,dataset_benchmark.json,200,200,0.6549,0.6155,0.4906,1.0,1.0,139.0
+lns_solver,dataset_100.json,100,100,0.7111,0.6384,0.658,0.96,0.985,474.3
+lns_solver,dataset_200_2.json,200,200,0.7434,0.6712,0.7055,0.9747,0.9865,523.6
+lns_solver,dataset_benchmark.json,200,200,0.7298,0.7172,0.6036,0.9833,0.9175,1062.6

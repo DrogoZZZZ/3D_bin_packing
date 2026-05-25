@@ -1,0 +1,59 @@
+\clearpage
+\appendix
+\section*{\MakeUppercase{Приложение А}}
+\addcontentsline{toc}{section}{\MakeUppercase{Приложение А}}
+\textbf{Сводная таблица benchmark-результатов}
+
+\small
+\begin{longtable}{p{0.21\textwidth}p{0.24\textwidth}rrrr}
+\toprule
+\textbf{Решатель} & \textbf{Датасет} & \textbf{Score} & \textbf{Vol.} & \textbf{Coverage} & \textbf{Time, мс} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Решатель} & \textbf{Датасет} & \textbf{Score} & \textbf{Vol.} & \textbf{Coverage} & \textbf{Time, мс} \\
+\midrule
+\endhead
+Greedy & \path{dataset_100.json} & 0.6842 & 0.5961 & 0.6204 & 114.8 \\
+Greedy & \path{dataset_200_2.json} & 0.7120 & 0.6228 & 0.6686 & 118.5 \\
+Greedy & \path{dataset_benchmark.json} & 0.6549 & 0.6155 & 0.4906 & 139.0 \\
+MaxRects & \path{dataset_100.json} & 0.7104 & 0.7005 & 0.6825 & 15.1 \\
+MaxRects & \path{dataset_200_2.json} & 0.7117 & 0.7000 & 0.6809 & 15.6 \\
+MaxRects & \path{dataset_benchmark.json} & 0.7124 & 0.7513 & 0.6160 & 52.0 \\
+GAN+GA & \path{dataset_100.json} & 0.7012 & 0.6278 & 0.6271 & 795.3 \\
+GAN+GA & \path{dataset_150.json} & 0.7262 & 0.6571 & 0.6589 & 769.3 \\
+GAN+GA & \path{dataset_200_2.json} & 0.7327 & 0.6700 & 0.6591 & 770.4 \\
+GAN+GA & \path{dataset_benchmark.json} & 0.7161 & 0.7156 & 0.5540 & 1080.6 \\
+LNS & \path{dataset_100.json} & 0.7111 & 0.6384 & 0.6580 & 474.3 \\
+LNS & \path{dataset_200_2.json} & 0.7434 & 0.6712 & 0.7055 & 523.6 \\
+LNS & \path{dataset_benchmark.json} & 0.7298 & 0.7172 & 0.6036 & 1062.6 \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\clearpage
+\section*{\MakeUppercase{Приложение Б}}
+\addcontentsline{toc}{section}{\MakeUppercase{Приложение Б}}
+\textbf{Ключевые файлы реализации}
+
+\begin{table}[H]
+\caption{Файлы, использованные при анализе реализации}
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.35\textwidth}X}
+\toprule
+\textbf{Файл} & \textbf{Содержание} \\
+\midrule
+\path{validator.py} & проверка границ, пересечений, опоры, массы, ориентации и расчет score \\
+\path{solvers/greedy_algorithm.py} & greedy на extreme points, gravity drop, spatial hash grid \\
+\path{solvers/solve_conditions.py} & послойный MaxRects-подобный решатель \\
+\path{solvers/lns_solver.py} & LNS с destroy/repair, beam search, simulated annealing и ILS-рестартами \\
+\path{solvers/gan_ga_solver.py} & генетический алгоритм с NumPy-GAN компонентой \\
+\path{dataset_generation/generator.py} & архетипы товаров и сценарии генерации задач \\
+\path{brute_force_vs_algo/brute_force.py} & branch-and-bound и limited discrepancy search для малых задач \\
+\path{multipallet/solver.py}, \path{multipallet/lns_solver.py} & многопаллетные расширения \\
+\path{vizualizator/visualizator.py} & просмотр single-pallet укладки \\
+\path{benchmark_report.py} & агрегация JSON-результатов в CSV \\
+\bottomrule
+\end{tabularx}
+\end{table}

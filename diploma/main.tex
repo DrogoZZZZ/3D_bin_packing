@@ -1,0 +1,114 @@
+% !TeX encoding = UTF-8
+% !TeX spellcheck = ru_RU
+\documentclass[14pt,a4paper]{extarticle}
+
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T2A]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[russian]{babel}
+\else
+  \usepackage{fontspec}
+  \usepackage[russian]{babel}
+  \IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{CMU Serif}}
+  \IfFontExistsTF{Courier New}{\setmonofont{Courier New}}{\setmonofont{CMU Typewriter Text}}
+\fi
+\ifPDFTeX
+  \usepackage{tempora}
+  \usepackage{courier}
+\fi
+
+\usepackage[a4paper,left=30mm,right=10mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{kprj}
+
+\VKRTitleOnly
+\Ministry{Министерство науки и высшего образования\\Российской Федерации}
+\BMSTU{Федеральное государственное автономное\\
+образовательное учреждение высшего образования\\
+\al{}Московский государственный технический университет\\
+имени Н.\,Э.~Баумана (национальный\\
+исследовательский университет)\ar{}\\
+(МГТУ им. Н.Э.~Баумана)}
+\title{Эвристические и ML-подходы к\\решению задачи 3D Bin Packing}
+\author{И.В.~Иртюга}
+\authorfull{Иртюга Илья Владимирович}
+\group{ФН12-81Б}
+\faculty{Фундаментальные науки}
+\facultyshort{ФН}
+\chair{Математическое моделирование}
+\chairshort{ФН12}
+\chief{Д.А.~Фетисов}
+\inspector{М.А.~Велищанский}
+\workyear{2026}
+
+\onehalfspacing
+\setcounter{secnumdepth}{3}
+\setcontentsname{СОДЕРЖАНИЕ}
+\setrefsname{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}
+
+\hypersetup{
+  unicode=true,
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=black,
+  pdfauthor={Иртюга Илья Владимирович},
+  pdftitle={Эвристические и ML-подходы к решению задачи 3D Bin Packing}
+}
+
+\captionsetup[figure]{labelsep=period,justification=centering}
+\captionsetup[table]{labelsep=period,justification=raggedright,singlelinecheck=false}
+\renewcommand{\arraystretch}{1.15}
+\graphicspath{{images/}}
+\sloppy
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  keepspaces=true
+}
+
+\newcommand{\structsection}[1]{%
+  \clearpage
+  \section*{\MakeUppercase{#1}}%
+  \addcontentsline{toc}{section}{\MakeUppercase{#1}}%
+}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\begin{document}
+
+\begin{spacing}{1.0}
+\maketitle
+\end{spacing}
+
+\input{sections/00_abstract}
+\clearpage
+\tableofcontents
+\input{sections/01_intro}
+\input{sections/02_domain_task}
+\input{sections/03_methods}
+\input{sections/04_project}
+\input{sections/05_experiments}
+\input{sections/06_conclusion}
+\input{sections/07_bibliography}
+\input{sections/08_appendix}
+
+\end{document}
