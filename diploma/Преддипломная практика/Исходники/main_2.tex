@@ -1,0 +1,166 @@
+% !TeX encoding = UTF-8
+% !TeX spellcheck = ru_RU
+\documentclass[14pt,a4paper]{extarticle}
+
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T2A]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[russian]{babel}
+\else
+  \usepackage{fontspec}
+  \usepackage[russian]{babel}
+  \IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{CMU Serif}}
+  \IfFontExistsTF{Courier New}{\setmonofont{Courier New}}{\setmonofont{CMU Typewriter Text}}
+\fi
+\ifPDFTeX
+  \usepackage{tempora}
+  \usepackage{courier}
+\fi
+
+\usepackage[a4paper,left=30mm,right=10mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{kprj}
+
+\onehalfspacing
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{1}
+\setcontentsname{СОДЕРЖАНИЕ}
+\setrefsname{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}
+
+\hypersetup{
+  unicode=true,
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=black,
+  pdfauthor={Иртюга Илья Владимирович},
+  pdftitle={Отчет. Эвристические и ML-подходы к решению задачи 3D Bin Packing}
+}
+
+\addto\captionsrussian{%
+  \renewcommand{\figurename}{Рисунок}%
+  \renewcommand{\tablename}{Таблица}%
+}
+\DeclareCaptionLabelSeparator{dash}{ -- }
+\captionsetup[figure]{labelsep=dash,justification=centering,singlelinecheck=false,skip=3pt}
+\captionsetup[table]{labelsep=dash,justification=raggedright,singlelinecheck=false,skip=3pt}
+\makeatletter
+\long\def\@makecaption#1#2{%
+  \def\@tempa{#2}\def\@tempb{\ignorespaces}%
+  \ifx\@tempa\@tempb
+    \def\@tempb{{\captionnofont{#1}}}%
+  \else
+    \def\@tempb{{\captionnofont{#1 --}\space}}%
+  \fi
+  \sbox\@tempboxa{\captionfont\@tempb#2}%
+  \ifdim \wd\@tempboxa >\hsize
+    {\captionfont\@tempb#2\par}%
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi}
+\makeatother
+\renewcommand{\arraystretch}{1.05}
+\setlist{nosep,leftmargin=*}
+\setlength{\textfloatsep}{8pt plus 1pt minus 2pt}
+\setlength{\floatsep}{8pt plus 1pt minus 2pt}
+\setlength{\intextsep}{8pt plus 1pt minus 2pt}
+\setlength{\abovedisplayskip}{6pt plus 1pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 1pt minus 2pt}
+\graphicspath{{images/}}
+\sloppy
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  keepspaces=true
+}
+
+\newcommand{\structsection}[1]{%
+  \clearpage
+  \section*{\MakeUppercase{#1}}%
+  \addcontentsline{toc}{section}{\MakeUppercase{#1}}%
+}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\newcommand{\practicecover}{%
+  \newgeometry{left=25mm,right=25mm,top=20mm,bottom=10mm}
+  \thispagestyle{empty}
+  \begingroup
+  \fontsize{14pt}{17pt}\selectfont
+  \begin{center}
+    Министерство науки и высшего образования Российской Федерации\par
+    Федеральное государственное автономное образовательное учреждение\par
+    высшего образования\par
+    \makebox[\textwidth][c]{\fontsize{13.6pt}{17pt}\selectfont <<Московский государственный технический университет имени Н.Э. Баумана}\par
+    (национальный исследовательский университет)>>\par
+    (МГТУ им. Н.Э. Баумана)\par
+  \end{center}
+
+  \vspace{20mm}
+  \noindent\hspace*{11mm}\begin{tabular}{@{}p{22mm}l@{}}
+    Факультет & <<Фундаментальные науки>> \\[2mm]
+    Кафедра & ФН-12 <<Математическое моделирование>> \\[2mm]
+    Группа & ФН12-81Б \\
+  \end{tabular}
+
+  \vspace{30mm}
+  \begin{center}
+    {\bfseries\fontsize{18pt}{22pt}\selectfont ОТЧЕТ\par}
+    \vspace{18mm}
+    {\bfseries\fontsize{16pt}{20pt}\selectfont
+      Эвристические и ML-подходы к решению задачи\par
+      3D Bin Packing\par}
+  \end{center}
+
+  \vspace{34mm}
+  \noindent\hspace*{11mm}\begin{tabularx}{\dimexpr\textwidth-11mm\relax}{@{}lXr@{}}
+    Студент: & & Иртюга И.В. \\[3mm]
+    Руководитель: & & Велищанский М.А. \\
+  \end{tabularx}
+
+  \vfill
+  \begin{center}
+    Москва, 2026
+  \end{center}
+  \endgroup
+  \clearpage
+  \restoregeometry
+}
+\newcommand{\ulinefill}[1]{\underline{\hbox to 0.95\linewidth{\ #1\hfill}}}
+
+\begin{document}
+
+\begin{spacing}{1.0}
+\practicecover
+\end{spacing}
+
+\tableofcontents
+\input{sections_2/01_intro}
+\input{sections_2/02_domain_task}
+\input{sections_2/03_methods}
+\input{sections_2/04_project}
+\input{sections_2/05_experiments}
+\input{sections_2/06_conclusion}
+\input{sections_2/07_bibliography}
+
+\end{document}

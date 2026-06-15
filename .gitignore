@@ -14,11 +14,11 @@ __pycache__/
 !diploma/images/*.png
 !diploma/tables/
 !diploma/tables/*.csv
+!diploma/questions.md
 NIR/
 Бланки/
 Дипломы прошлых лет/
 
-# Codex/local assistant artifacts
 .codex/
 codex/
 codex-*/
@@ -32,8 +32,8 @@ diploma/diploma_Irtyuga_3D_bin_packing_figures_fixed.pdf
 diploma/diploma_Irtyuga_3D_bin_packing_arrows_fixed.pdf
 diploma/main.pdf
 diploma/main_xe.pdf
+diploma/main_2.pdf
 
-# LaTeX build artifacts
 *.aux
 *.log
 *.out

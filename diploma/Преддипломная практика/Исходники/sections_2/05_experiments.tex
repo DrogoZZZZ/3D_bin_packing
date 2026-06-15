@@ -1,5 +1,5 @@
 \clearpage
-\section[\MakeUppercase{Эксперименты, метрики и анализ результатов}]{\centering\MakeUppercase{Эксперименты, метрики и анализ результатов}}
+\section[Эксперименты, метрики и анализ результатов]{\centering\MakeUppercase{Эксперименты, метрики и анализ результатов}}
 
 \subsection{\centering{Методика эксперимента}}
 
@@ -28,10 +28,14 @@
 \hline
 \textbf{Метод} & \textbf{\code{dataset\_100}} & \textbf{\code{dataset\_200\_2}} & \textbf{\code{dataset\_benchmark}} \\
 \hline
-Greedy & 0.6842 & 0.7120 & 0.6549 \\ \hline
-MaxRects & 0.7104 & 0.7117 & 0.7124 \\ \hline
-GAN+GA & 0.7012 & 0.7327 & 0.7161 \\ \hline
-LNS & \textbf{0.7111} & \textbf{0.7434} & \textbf{0.7298} \\ \hline
+Greedy & 0.6842 & 0.7120 & 0.6549 \\
+\hline
+MaxRects & 0.7104 & 0.7117 & 0.7124 \\
+\hline
+GAN+GA & 0.7012 & 0.7327 & 0.7161 \\
+\hline
+LNS & \textbf{0.7111} & \textbf{0.7434} & \textbf{0.7298} \\
+\hline
 \end{tabular}
 \end{table}
 
@@ -57,10 +61,14 @@ LNS показывает лучший результат на всех трех 
 \hline
 \textbf{Метод} & \textbf{Score} & \textbf{Vol.} & \textbf{Coverage} & \textbf{Fragility} & \textbf{Time} \\
 \hline
-Greedy & 0.6549 & 0.6155 & 0.4906 & 1.0000 & 1.0000 \\ \hline
-MaxRects & 0.7124 & \textbf{0.7513} & \textbf{0.6160} & 0.5198 & 1.0000 \\ \hline
-GAN+GA & 0.7161 & 0.7156 & 0.5540 & \textbf{1.0000} & 0.9205 \\ \hline
-LNS & \textbf{0.7298} & 0.7172 & 0.6036 & 0.9833 & 0.9175 \\ \hline
+Greedy & 0.6549 & 0.6155 & 0.4906 & 1.0000 & 1.0000 \\
+\hline
+MaxRects & 0.7124 & \textbf{0.7513} & \textbf{0.6160} & 0.5198 & 1.0000 \\
+\hline
+GAN+GA & 0.7161 & 0.7156 & 0.5540 & \textbf{1.0000} & 0.9205 \\
+\hline
+LNS & \textbf{0.7298} & 0.7172 & 0.6036 & 0.9833 & 0.9175 \\
+\hline
 \end{tabular}
 \end{table}
 
@@ -88,10 +96,14 @@ LNS не максимизирует отдельную компоненту лю
 \hline
 \textbf{Метод} & \textbf{\code{dataset\_100}} & \textbf{\code{dataset\_200\_2}} & \textbf{\code{dataset\_benchmark}} \\
 \hline
-Greedy & 114.8 & 118.5 & 139.0 \\ \hline
-MaxRects & 15.1 & 15.6 & 52.0 \\ \hline
-GAN+GA & 795.3 & 770.4 & 1080.6 \\ \hline
-LNS & 474.3 & 523.6 & 1062.6 \\ \hline
+Greedy & 114.8 & 118.5 & 139.0 \\
+\hline
+MaxRects & 15.1 & 15.6 & 52.0 \\
+\hline
+GAN+GA & 795.3 & 770.4 & 1080.6 \\
+\hline
+LNS & 474.3 & 523.6 & 1062.6 \\
+\hline
 \end{tabular}
 \end{table}
 
@@ -99,7 +111,7 @@ LNS & 474.3 & 523.6 & 1062.6 \\ \hline
 
 \subsection{\centering{Сравнение LNS и Greedy}}
 
-В рамках НИР отдельно исследовался LNS как развитие базового greedy. Для этой пары доступны графики, построенные из сохраненных результатов. На рис.~\ref{fig:lns-greedy-score} показано, что LNS стабильно превосходит greedy по среднему score на трех наборах.
+НИР по проекту отдельно исследовала LNS как развитие базового greedy. Для этой пары доступны графики, построенные из сохраненных результатов. На рис.~\ref{fig:lns-greedy-score} показано, что LNS стабильно превосходит greedy по среднему score на трех наборах.
 
 \begin{figure}[H]
 \centering
@@ -126,16 +138,22 @@ LNS & 474.3 & 523.6 & 1062.6 \\ \hline
 \label{tab:brute}
 \centering
 \small
-\begin{tabular}{|l|l|r|r|r|}
+\begin{tabular}{|l|l|c|c|c|}
 \hline
 \textbf{Набор} & \textbf{Метод} & \textbf{Score} & \textbf{Coverage} & \textbf{Время, мс} \\
 \hline
-small & Brute force & 0.5563 & 0.9897 & 19.5 \\ \hline
-small & LNS & \textbf{0.5602} & \textbf{1.0000} & 28.3 \\ \hline
-medium & Brute force & 0.5681 & 0.9921 & 10440.7 \\ \hline
-medium & LNS & \textbf{0.5780} & \textbf{1.0000} & 72.5 \\ \hline
-hard & Brute force / LDS & 0.5886 & 0.9364 & 8815.0 \\ \hline
-hard & LNS & \textbf{0.6501} & \textbf{1.0000} & 243.2 \\ \hline
+small & Brute force & 0.5563 & 0.9897 & 19.5 \\
+\hline
+small & LNS & \textbf{0.5602} & \textbf{1.0000} & 28.3 \\
+\hline
+medium & Brute force & 0.5681 & 0.9921 & 10440.7 \\
+\hline
+medium & LNS & \textbf{0.5780} & \textbf{1.0000} & 72.5 \\
+\hline
+hard & Brute force / LDS & 0.5886 & 0.9364 & 8815.0 \\
+\hline
+hard & LNS & \textbf{0.6501} & \textbf{1.0000} & 243.2 \\
+\hline
 \end{tabular}
 \end{table}
 
@@ -145,7 +163,7 @@ hard & LNS & \textbf{0.6501} & \textbf{1.0000} & 243.2 \\ \hline
 
 В каталоге \code{multipallet} реализовано расширение на несколько паллет. Эта постановка ближе к реальной логистике: если весь заказ нельзя разместить на одной паллете, требуется распределить оставшиеся товары на новые паллеты. В проекте есть single-pallet и multi-pallet решения для greedy и LNS.
 
-В рамках данной ВКР многопаллетный режим рассматривается как направление развития, поскольку основная метрика и основные benchmark-результаты сосредоточены на single-pallet постановке. Тем не менее наличие отдельного каталога \code{multipallet} показывает, что архитектура проекта допускает переход от локальной задачи плотной укладки к задаче распределения заказа между несколькими контейнерами.
+В рамках данного отчета многопаллетный режим рассматривается как направление развития, поскольку основная метрика и основные benchmark-результаты сосредоточены на single-pallet постановке. Тем не менее наличие отдельного каталога \code{multipallet} показывает, что архитектура проекта допускает переход от локальной задачи плотной укладки к задаче распределения заказа между несколькими контейнерами.
 
 \subsection{\centering{Анализ ошибок и ограничений}}
 

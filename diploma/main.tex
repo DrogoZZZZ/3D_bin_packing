@@ -54,7 +54,7 @@
 \chair{Математическое моделирование}
 \chairshort{ФН12}
 \chief{Д.А.~Фетисов}
-\inspector{М.А.~Велищанский}
+\inspector{\hspace{-1.5pt}М.А.~Велищанский}
 \workyear{2026}
 
 \onehalfspacing
@@ -71,9 +71,38 @@
   pdfauthor={Иртюга Илья Владимирович},
   pdftitle={Эвристические и ML-подходы к решению задачи 3D Bin Packing}
 }
+\pdfstringdefDisableCommands{%
+  \let\centering\empty
+}
 
 \captionsetup[figure]{labelsep=period,justification=centering}
-\captionsetup[table]{labelsep=period,justification=raggedright,singlelinecheck=false}
+\captionsetup[table]{labelsep=endash,justification=raggedright,singlelinecheck=false}
+\makeatletter
+\long\def\@makecaption#1#2{%
+  \def\@tempa{#2}\def\@tempb{\ignorespaces}%
+  \ifx\@tempa\@tempb
+    \def\@tempb{{\captionnofont{#1}}}%
+  \else
+    \def\@tempc{table}%
+    \ifx\@captype\@tempc
+      \def\@tempb{{\captionnofont{#1~--}\space}}%
+    \else
+      \def\@tempb{{\captionnofont{#1.}\space}}%
+    \fi
+  \fi
+  \sbox\@tempboxa{\captionfont\@tempb#2}%
+  \ifdim \wd\@tempboxa >\hsize
+    \def\@tempc{table}%
+    \ifx\@captype\@tempc
+      {\raggedright\captionfont\@tempb#2\par}%
+    \else
+      {\centering\captionfont\@tempb#2\par}%
+    \fi
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi}
+\makeatother
 \renewcommand{\arraystretch}{1.15}
 \graphicspath{{images/}}
 \sloppy

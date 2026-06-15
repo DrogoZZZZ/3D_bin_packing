@@ -1,32 +1,41 @@
 \clearpage
-\section[\MakeUppercase{Разработанное решение Smart 3D Packing}]{\centering\MakeUppercase{Разработанное решение Smart 3D Packing}}
+\section[Разработанное решение Smart 3D Packing]{\centering\MakeUppercase{Разработанное решение Smart 3D Packing}}
 
 \subsection{\centering{Структура репозитория}}
 
-Репозиторий проекта организован как экспериментальная среда для исследования алгоритмов паллетизации. Основные каталоги и файлы приведены в таблице~\ref{tab:repo-structure}.
+Репозиторий проекта организован как экспериментальная среда для исследования алгоритмов паллетизации~\cite{project_repo}. Основные каталоги и файлы приведены в таблице~\ref{tab:repo-structure}.
 
 \begin{table}[H]
 \caption{Основные компоненты проекта}
 \label{tab:repo-structure}
 \centering
 \small
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.30\textwidth}|X|}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.35\textwidth}|X|}
 \hline
 \textbf{Компонент} & \textbf{Назначение} \\
 \hline
-\code{datasets} & готовые single-pallet наборы задач в формате JSON \\ \hline
-\code{dataset\_generation} & генератор синтетических сценариев фуд-ритейла \\ \hline
-\code{solvers} & основные single-pallet решатели: greedy, MaxRects, LNS, GAN+GA \\ \hline
-\code{validator.py} & проверка жестких ограничений и расчет итоговой метрики \\ \hline
-\code{results} & сохраненные результаты запусков решателей и рассчитанные метрики \\ \hline
-\code{brute\_force\_vs\_algo} & сравнение эвристик с branch-and-bound на малых задачах \\ \hline
-\code{multipallet} & расширение на случай нескольких паллет \\ \hline
-\code{vizualizator} & интерактивная визуализация укладок \\ \hline
-\code{benchmark\_report.py}, \code{plot\_benchmark.py} & агрегация результатов и построение графиков \\ \hline
+\code{datasets} & готовые single-pallet наборы задач в формате JSON \\
+\hline
+\code{dataset\_generation} & генератор синтетических сценариев фуд-ритейла \\
+\hline
+\code{solvers} & основные single-pallet решатели: greedy, MaxRects, LNS, GAN+GA \\
+\hline
+\code{validator.py} & проверка жестких ограничений и расчет итоговой метрики \\
+\hline
+\code{results} & сохраненные результаты запусков решателей и рассчитанные метрики \\
+\hline
+\code{brute\_force\_vs\_algo} & сравнение эвристик с branch-and-bound на малых задачах \\
+\hline
+\code{multipallet} & расширение на случай нескольких паллет \\
+\hline
+\code{vizualizator} & интерактивная визуализация укладок \\
+\hline
+\code{benchmark\_report.py}, \code{plot\_benchmark.py} & агрегация результатов и построение графиков \\
+\hline
 \end{tabularx}
 \end{table}
 
-Общая схема работы проекта показана на рис.~\ref{fig:architecture}. Сначала формируется или загружается входной JSON, затем один из решателей строит укладку, валидатор проверяет корректность и вычисляет метрики, после чего результаты сохраняются и могут быть визуализированы или агрегированы в benchmark-отчет.
+Общий pipeline проекта показан на рис.~\ref{fig:architecture}. Сначала формируется или загружается входной JSON, затем один из решателей строит укладку, валидатор проверяет корректность и вычисляет метрики, после чего результаты сохраняются и могут быть визуализированы или агрегированы в benchmark-отчет.
 
 \begin{figure}[H]
 \centering
@@ -91,14 +100,18 @@
 \hline
 \textbf{Датасет} & \textbf{Задач} & \textbf{Ср. объектов} & \textbf{Мин.} & \textbf{Макс.} & \textbf{Ср. SKU} \\
 \hline
-\code{dataset\_100.json} & 100 & 94.6 & 35 & 194 & 3.4 \\ \hline
-\code{dataset\_150.json} & 150 & 94.9 & 36 & 185 & 3.3 \\ \hline
-\code{dataset\_200\_2.json} & 200 & 94.7 & 33 & 194 & 3.4 \\ \hline
-\code{dataset\_benchmark.json} & 200 & 140.0 & 31 & 316 & 3.7 \\ \hline
+\code{dataset\_100.json} & 100 & 94.6 & 35 & 194 & 3.4 \\
+\hline
+\code{dataset\_150.json} & 150 & 94.9 & 36 & 185 & 3.3 \\
+\hline
+\code{dataset\_200\_2.json} & 200 & 94.7 & 33 & 194 & 3.4 \\
+\hline
+\code{dataset\_benchmark.json} & 200 & 140.0 & 31 & 316 & 3.7 \\
+\hline
 \end{tabular}
 \end{table}
 
-Сценарный состав сгенерированных наборов задач показан на рис.~\ref{fig:dataset-composition}.
+Распределение задач по сценариям для каждого датасета показано на рис.~\ref{fig:dataset-composition}.
 
 \begin{figure}[H]
 \centering
@@ -129,52 +142,7 @@
 
 \subsection{\centering{LNS-решатель}}
 
-Файл \code{solvers/lns\_solver.py} содержит наиболее сильный решатель проекта. Схема его работы показана на рис.~\ref{fig:lns-pipeline}.
-
-\begin{figure}[H]
-\centering
-\resizebox{0.98\textwidth}{!}{%
-\begin{tikzpicture}[
-  node distance=9mm and 10mm,
-  processnode/.style={draw, rounded corners=2pt, fill=blue!7, minimum width=31mm,
-    minimum height=10mm, align=center, font=\small},
-  phase/.style={draw, rounded corners=2pt, fill=green!9, minimum width=31mm,
-    minimum height=10mm, align=center, font=\small},
-  decide/.style={draw, diamond, aspect=2.1, fill=orange!12,
-    align=center, font=\small, inner sep=1.5pt},
-  arrow/.style={-{Latex[length=2.2mm]}, thick},
-  loop/.style={-{Latex[length=2.2mm]}, thick, dashed}
-]
-\node[processnode] (input) {Входная\\задача};
-\node[phase, right=of input] (start) {Построение\\начального решения};
-\node[phase, right=of start] (destroy) {Destroy:\\удаление части\\коробов};
-\node[phase, right=of destroy] (stabilize) {Стабилизация\\опоры};
-\node[phase, right=of stabilize] (repair) {Repair:\\beam search};
-
-\node[phase, below=11mm of repair] (evaluate) {Оценка\\кандидата};
-\node[phase, left=of evaluate] (accept) {Принятие\\по score/SA};
-\node[processnode, left=of accept] (current) {Обновление\\текущего решения};
-\node[processnode, left=of current] (stop) {Проверка\\бюджета времени};
-\node[processnode, left=of stop] (output) {Ответ JSON\\и метрики};
-\node[processnode, below=8mm of accept] (best) {Обновление\\лучшего решения};
-
-\draw[arrow] (input) -- (start);
-\draw[arrow] (start) -- (destroy);
-\draw[arrow] (destroy) -- (stabilize);
-\draw[arrow] (stabilize) -- (repair);
-\draw[arrow] (repair) -- (evaluate);
-\draw[arrow] (evaluate) -- (accept);
-\draw[arrow] (accept) -- (current);
-\draw[loop] (accept) -- node[right, font=\footnotesize] {если лучше} (best);
-\draw[loop] (best.west) to[out=180,in=-90] (output.south);
-\draw[arrow] (current) -- (stop);
-\draw[loop] (stop.north) to[out=90,in=-90] node[above, font=\footnotesize] {продолжить} (destroy.south);
-\draw[arrow] (stop) -- node[above, font=\footnotesize] {стоп} (output);
-\end{tikzpicture}%
-}
-\caption{Основные этапы LNS-решателя}
-\label{fig:lns-pipeline}
-\end{figure}
+Файл \code{solvers/lns\_solver.py} содержит наиболее сильный решатель проекта. Его работа строится как цикл: построение стартового решения, удаление части размещенных коробов, стабилизация опоры, восстановление решения beam search, оценка кандидата, принятие по итоговому score и simulated annealing, затем проверка бюджета времени.
 
 Сначала LNS строит начальное решение. В отличие от одиночного greedy-запуска, используется несколько детерминированных порядков и случайные рестарты в пределах бюджета \code{greedy\_phase\_s}. Затем запускается основной цикл destroy/repair. В реализации присутствуют destroy-эвристики:
 \begin{itemize}
@@ -201,22 +169,33 @@
 \label{tab:lns-params}
 \centering
 \small
-\begin{tabular}{|l|c|l|}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.31\textwidth}|c|X|}
 \hline
 \textbf{Параметр} & \textbf{Значение} & \textbf{Назначение} \\
 \hline
-\code{time\_budget\_s} & 4.8 & общий бюджет времени \\ \hline
-\code{greedy\_phase\_s} & 1.5 & стартовая greedy-фаза \\ \hline
-\code{destroy\_k\_fraction} & 0.15 & доля удаляемых коробов \\ \hline
-\code{destroy\_k\_min/max} & 3 / 15 & границы размера разрушения \\ \hline
-\code{beam\_width} & 8 & ширина beam search \\ \hline
-\code{repair\_queue\_limit} & 50 & максимальная очередь восстановления \\ \hline
-\code{repair\_restarts} & 2 & дополнительные repair-рестарты \\ \hline
-\code{early\_stop\_patience} & 25 & остановка при отсутствии улучшений \\ \hline
-\code{ils\_kicks} & 5 & число ILS-перезапусков \\ \hline
-\code{sa\_initial\_temp} & 0.015 & начальная температура simulated annealing \\ \hline
-\code{sa\_cooling\_rate} & 0.92 & скорость охлаждения \\ \hline
-\end{tabular}
+\code{time\_budget\_s} & 4.8 & общий бюджет времени \\
+\hline
+\code{greedy\_phase\_s} & 1.5 & стартовая greedy-фаза \\
+\hline
+\code{destroy\_k\_fraction} & 0.15 & доля удаляемых коробов \\
+\hline
+\code{destroy\_k\_min/max} & 3 / 15 & границы размера разрушения \\
+\hline
+\code{beam\_width} & 8 & ширина beam search \\
+\hline
+\code{repair\_queue\_limit} & 50 & максимальная очередь восстановления \\
+\hline
+\code{repair\_restarts} & 2 & дополнительные repair-рестарты \\
+\hline
+\code{early\_stop\_patience} & 25 & остановка при отсутствии улучшений \\
+\hline
+\code{ils\_kicks} & 5 & число ILS-перезапусков \\
+\hline
+\code{sa\_initial\_temp} & 0.015 & начальная температура simulated annealing \\
+\hline
+\code{sa\_cooling\_rate} & 0.92 & скорость охлаждения \\
+\hline
+\end{tabularx}
 \end{table}
 
 \subsection{\centering{GAN+GA-решатель}}
@@ -229,14 +208,7 @@
 
 \subsection{\centering{Визуализация}}
 
-Каталог \code{vizualizator} содержит средства просмотра результатов. Визуализатор читает входной JSON и JSON с размещениями, строит трехмерное представление паллеты и позволяет анализировать слои. Для дипломной работы на основе сохраненного результата LNS построен пример укладки на рис.~\ref{fig:example-packing}.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.80\textwidth]{example_lns_packing.png}
-\caption{Пример укладки, построенной LNS для первой задачи \code{dataset\_100.json}}
-\label{fig:example-packing}
-\end{figure}
+Каталог \code{vizualizator} содержит средства просмотра результатов. Визуализатор читает входной JSON и JSON с размещениями, строит трехмерное представление паллеты и позволяет анализировать слои. Этот модуль используется как вспомогательный инструмент: он помогает проверять геометрию решений после запуска валидатора и находить случаи, где формально допустимая укладка выглядит неудачной для практического применения.
 
 \subsection{\centering{Выводы по разделу}}
 
