@@ -27,6 +27,7 @@
 \usepackage{caption}
 \usepackage{float}
 \usepackage{array}
+\usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{tabularx}
@@ -58,6 +59,12 @@
 \workyear{2026}
 
 \onehalfspacing
+\setlength{\parindent}{12.5mm}
+\setlength{\leftmargini}{0mm}
+\setlength{\leftmarginii}{0mm}
+\setlength{\leftmarginiii}{0mm}
+\setlist[enumerate]{leftmargin=0pt,itemindent=15mm,labelwidth=0pt,labelsep=0.5em,align=left,topsep=0.2ex plus 0.2ex minus 0.2ex,partopsep=0.4ex plus 0.2ex minus 0.2ex,parsep=0pt plus 0.2ex,itemsep=0pt plus 0.2ex}
+\setlist[itemize]{leftmargin=0pt,itemindent=15mm,labelwidth=0pt,labelsep=0.5em,align=left,topsep=0.2ex plus 0.2ex minus 0.2ex,partopsep=0.4ex plus 0.2ex minus 0.2ex,parsep=0pt plus 0.2ex,itemsep=0pt plus 0.2ex}
 \setcounter{secnumdepth}{3}
 \setcontentsname{СОДЕРЖАНИЕ}
 \setrefsname{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}
@@ -78,6 +85,31 @@
 \captionsetup[figure]{labelsep=period,justification=centering}
 \captionsetup[table]{labelsep=endash,justification=raggedright,singlelinecheck=false}
 \makeatletter
+\renewenvironment{thebibliography}[1]
+{\section-{\refname}%
+  \@mkboth{\refname}{\refname}%
+  \setcounter{enumiv}{0}%
+  \renewcommand\theenumiv{\@arabic\c@enumiv}%
+  \def\bibitem{\@ifnextchar[{\@lbibitem}{\@bibitem}}%
+  \def\@bibitem##1{%
+    \par\vspace{5pt}\stepcounter{enumiv}%
+    \if@filesw
+      \immediate\write\@auxout{\string\bibcite{##1}{\theenumiv}}%
+    \fi
+    \noindent\hspace*{\parindent}\theenumiv.\space\ignorespaces}%
+  \def\@lbibitem[##1]##2{%
+    \par\vspace{5pt}\stepcounter{enumiv}%
+    \if@filesw
+      \immediate\write\@auxout{\string\bibcite{##2}{##1}}%
+    \fi
+    \noindent\hspace*{\parindent}##1.\space\ignorespaces}%
+  \sloppy
+  \clubpenalty4000
+  \@clubpenalty \clubpenalty
+  \widowpenalty4000%
+  \sfcode`\.\@m}
+{\par}
+
 \long\def\@makecaption#1#2{%
   \def\@tempa{#2}\def\@tempb{\ignorespaces}%
   \ifx\@tempa\@tempb
@@ -100,7 +132,12 @@
     \fi
   \else
     \global \@minipagefalse
-    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+    \def\@tempc{table}%
+    \ifx\@captype\@tempc
+      {\raggedright\captionfont\@tempb#2\par}%
+    \else
+      \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+    \fi
   \fi}
 \makeatother
 \renewcommand{\arraystretch}{1.15}

@@ -3,14 +3,14 @@
 
 \subsection{\centering{Структура репозитория}}
 
-Репозиторий проекта организован как экспериментальная среда для исследования алгоритмов паллетизации. Основные каталоги и файлы приведены в таблице~\ref{tab:repo-structure}.
+Репозиторий проекта организован как экспериментальная среда для исследования алгоритмов паллетизации. Основные каталоги и файлы приведены в таблице~\ref{tab:repo-structure}. Исходный код проекта размещен в репозитории GitHub~\cite{project_repo}.
 
 \begin{table}[H]
 \caption{Основные компоненты проекта}
 \label{tab:repo-structure}
 \centering
 \small
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.30\textwidth}|X|}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.32\textwidth}|X|}
 \hline
 \textbf{Компонент} & \textbf{Назначение} \\
 \hline
@@ -133,65 +133,28 @@
 
 \begin{figure}[H]
 \centering
-\resizebox{0.98\textwidth}{!}{%
-\begin{tikzpicture}[
-  node distance=9mm and 10mm,
-  processnode/.style={draw, rounded corners=2pt, fill=blue!7, minimum width=31mm,
-    minimum height=10mm, align=center, font=\small},
-  phase/.style={draw, rounded corners=2pt, fill=green!9, minimum width=31mm,
-    minimum height=10mm, align=center, font=\small},
-  decide/.style={draw, diamond, aspect=2.1, fill=orange!12,
-    align=center, font=\small, inner sep=1.5pt},
-  arrow/.style={-{Latex[length=2.2mm]}, thick},
-  loop/.style={-{Latex[length=2.2mm]}, thick, dashed}
-]
-\node[processnode] (input) {Входная\\задача};
-\node[phase, right=of input] (start) {Построение\\начального решения};
-\node[phase, right=of start] (destroy) {Destroy:\\удаление части\\коробов};
-\node[phase, right=of destroy] (stabilize) {Стабилизация\\опоры};
-\node[phase, right=of stabilize] (repair) {Repair:\\beam search};
-
-\node[phase, below=11mm of repair] (evaluate) {Оценка\\кандидата};
-\node[phase, left=of evaluate] (accept) {Принятие\\по score/SA};
-\node[processnode, left=of accept] (current) {Обновление\\текущего решения};
-\node[processnode, left=of current] (stop) {Проверка\\бюджета времени};
-\node[processnode, left=of stop] (output) {Ответ JSON\\и метрики};
-\node[processnode, below=8mm of accept] (best) {Обновление\\лучшего решения};
-
-\draw[arrow] (input) -- (start);
-\draw[arrow] (start) -- (destroy);
-\draw[arrow] (destroy) -- (stabilize);
-\draw[arrow] (stabilize) -- (repair);
-\draw[arrow] (repair) -- (evaluate);
-\draw[arrow] (evaluate) -- (accept);
-\draw[arrow] (accept) -- (current);
-\draw[loop] (accept) -- node[right, font=\footnotesize] {если лучше} (best);
-\draw[loop] (best.west) to[out=180,in=-90] (output.south);
-\draw[arrow] (current) -- (stop);
-\draw[loop] (stop.north) to[out=90,in=-90] node[above, font=\footnotesize] {продолжить} (destroy.south);
-\draw[arrow] (stop) -- node[above, font=\footnotesize] {стоп} (output);
-\end{tikzpicture}%
-}
+\includegraphics[width=0.98\textwidth]{lns_pipeline_current.png}
 \caption{Основные этапы LNS-решателя}
 \label{fig:lns-pipeline}
 \end{figure}
 
 Сначала LNS строит начальное решение. В отличие от одиночного greedy-запуска, используется несколько детерминированных порядков и случайные рестарты в пределах бюджета \code{greedy\_phase\_s}. Затем запускается основной цикл destroy/repair. В реализации присутствуют destroy-эвристики:
 \begin{itemize}
-  \item случайное удаление размещенных коробов;
-  \item удаление верхних коробов;
-  \item удаление пространственного кластера;
-  \item удаление коробов, связанных с нарушениями хрупкости;
-  \item удаление коробов, близких по объему к непомещенным;
-  \item полный рестарт;
-  \item удаление малых размещенных коробов.
+  \item Случайное удаление размещенных коробов;
+  \item Удаление верхних коробов;
+  \item Удаление пространственного кластера;
+  \item Удаление коробов, связанных с нарушениями хрупкости;
+  \item Удаление коробов, близких по объему к непомещенным;
+  \item Полный рестарт;
+  \item Удаление малых размещенных коробов.
 \end{itemize}
 
-После разрушения вызывается стабилизация частичного решения: если некоторые короба потеряли достаточную опору, они также удаляются. Этап repair основан на beam search. Для частичных состояний применяется оценка
+После разрушения вызывается стабилизация частичного решения: если некоторые короба потеряли достаточную опору, они также удаляются. Этап repair основан на beam search. Для частичных состояний применяется оценка по формуле~\eqref{eq:partial}:
 \begin{equation}
 \mathrm{partial\_score}=0.50U_{\mathrm{vol}}+0.30C_{\mathrm{items}}-0.005n_{\mathrm{frag\_viol}},
 \label{eq:partial}
 \end{equation}
+\par\indent
 которая ориентирует восстановление на объем, покрытие и умеренный штраф за потенциальные нарушения хрупкости.
 
 Ключевые параметры LNS приведены в таблице~\ref{tab:lns-params}.
@@ -230,6 +193,12 @@
 \subsection{\centering{Визуализация}}
 
 Каталог \code{vizualizator} содержит средства просмотра результатов. Визуализатор читает входной JSON и JSON с размещениями, строит трехмерное представление паллеты и позволяет анализировать слои. Для дипломной работы на основе сохраненного результата LNS построен пример укладки на рис.~\ref{fig:example-packing}.
+
+Визуализация используется не как отдельная метрика, а как инструмент проверки интерпретации результатов. По числовым значениям score можно увидеть, какой метод лучше заполнил паллету или разместил больше коробов, но трудно понять, почему возникло отличие. Трехмерный просмотр помогает обнаружить характерные ситуации: пустые вертикальные полости после послойной укладки, слишком раннее размещение крупного короба, слабое использование верхних уровней или неудачное соседство хрупких и тяжелых товаров.
+
+Для анализа LNS визуализация особенно полезна, потому что метод многократно перестраивает часть решения. Если итоговая укладка оказывается лучше greedy, важно проверить, что улучшение действительно связано с более рациональным размещением, а не только с изменением порядка неразмещенных объектов. Просмотр слоев показывает, как repair-фаза заполняет свободные области и сохраняет опору для верхних коробов.
+
+В текущей реализации визуализатор отделен от решателей и валидатора. Такое разделение удобно для экспериментов: один и тот же результат можно сначала проверить формально, затем открыть в графическом виде и сопоставить с агрегированными метриками. Это также снижает риск ручной ошибки при подготовке иллюстраций для отчета, поскольку изображение строится по тому же JSON-ответу, который используется при расчете benchmark-таблиц.
 
 \begin{figure}[H]
 \centering
